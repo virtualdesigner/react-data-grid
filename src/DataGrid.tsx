@@ -94,6 +94,7 @@ export interface DataGridHandle {
   element: HTMLDivElement | null;
   scrollToCell: (position: PartialPosition) => void;
   selectCell: (position: Position, enableEditor?: Maybe<boolean>) => void;
+  deselectCell: () => void;
 }
 
 type SharedDivProps = Pick<
@@ -499,6 +500,12 @@ function DataGrid<R, SR, K extends Key>(
     }
   }, [shouldFocusCell, focusCellOrCellContent]);
 
+  function deselectCell(): void {
+    setSelectedPosition({ idx: -1, rowIdx: -1, mode: "SELECT" });
+    setCopiedPosition(null);
+    setDraggedOverRowIdx(undefined);
+  }
+
   useImperativeHandle(ref, () => ({
     element: gridRef.current,
     scrollToCell({ idx, rowIdx }) {
@@ -511,7 +518,8 @@ function DataGrid<R, SR, K extends Key>(
         setScrollToPosition({ idx: scrollToIdx, rowIdx: scrollToRowIdx });
       }
     },
-    selectCell
+    selectCell,
+    deselectCell
   }));
 
   /**
